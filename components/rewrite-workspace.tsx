@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState, useTransition } from "react";
+import { FormEvent, useRef, useState, useTransition } from "react";
 import { rewriteDefaults, selectors } from "@/lib/constants";
 import type { RewriteResponse } from "@/lib/types";
 
@@ -18,10 +18,13 @@ export function RewriteWorkspace() {
   const [error, setError] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const latestRequestId = useRef(0);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+    const requestId = latestRequestId.current + 1;
+    latestRequestId.current = requestId;
 
     startTransition(async () => {
       try {
@@ -48,13 +51,25 @@ export function RewriteWorkspace() {
           throw new Error(data.error ?? "Rewrite failed");
         }
 
-        setResult(data);
+        if (latestRequestId.current !== requestId) {
+          return;
+        }
+
+        startTransition(() => {
+          setResult(data);
+        });
       } catch (submitError) {
+        if (latestRequestId.current !== requestId) {
+          return;
+        }
+
         const message =
           submitError instanceof Error
             ? submitError.message
             : "Something went wrong";
-        setError(message);
+        startTransition(() => {
+          setError(message);
+        });
       }
     });
   };
@@ -63,7 +78,10 @@ export function RewriteWorkspace() {
     try {
       await navigator.clipboard.writeText(value);
       setCopiedKey(key);
-      window.setTimeout(() => setCopiedKey((current) => (current === key ? null : current)), 1600);
+      window.setTimeout(
+        () => setCopiedKey((current) => (current === key ? null : current)),
+        1600
+      );
     } catch (copyError) {
       console.error("Copy failed", copyError);
       setError("Unable to copy to clipboard right now");
@@ -237,7 +255,10 @@ export function RewriteWorkspace() {
                 Detected language: {result.detectedLanguage}
               </p>
               <p className="mt-2 text-xs uppercase tracking-[0.3em] text-white/45">
-                Source: {result.mode === "openai" ? "OpenAI live response" : "Local mock response"}
+                Source:{" "}
+                {result.mode === "openai"
+                  ? "OpenAI live response"
+                  : "Local mock response"}
               </p>
             </div>
           </div>

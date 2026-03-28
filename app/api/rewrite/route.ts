@@ -5,7 +5,7 @@ import { rewriteMessage } from "@/lib/ai/rewrite";
 
 export async function POST(request: Request) {
   try {
-    const json = await request.json();
+    const json = await parseJsonBody(request);
     const parsed = rewriteRequestSchema.safeParse(json);
 
     if (!parsed.success) {
@@ -34,6 +34,15 @@ export async function POST(request: Request) {
     const result = await rewriteMessage(parsed.data);
     return NextResponse.json(result);
   } catch (error) {
+    if (error instanceof InvalidJsonError) {
+      return NextResponse.json(
+        {
+          error: "Malformed JSON body"
+        },
+        { status: 400 }
+      );
+    }
+
     console.error("Rewrite route failed", error);
 
     return NextResponse.json(
@@ -44,3 +53,13 @@ export async function POST(request: Request) {
     );
   }
 }
+
+async function parseJsonBody(request: Request) {
+  try {
+    return await request.json();
+  } catch {
+    throw new InvalidJsonError();
+  }
+}
+
+class InvalidJsonError extends Error {}

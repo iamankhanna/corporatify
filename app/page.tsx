@@ -54,7 +54,10 @@ export default function HomePage() {
           <ExampleTransform />
         </section>
 
-        <section className="rounded-[2rem] border border-black/10 bg-[#16302b] px-8 py-10 text-white shadow-card">
+        <section
+          id="blueprint"
+          className="rounded-[2rem] border border-black/10 bg-[#16302b] px-8 py-10 text-white shadow-card"
+        >
           <SectionHeading
             eyebrow="Preset lanes"
             title="Built around the messages people actually struggle to send"

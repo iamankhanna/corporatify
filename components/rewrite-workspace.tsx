@@ -213,8 +213,11 @@ export function RewriteWorkspace() {
                   Notes
                 </p>
                 <div className="mt-3 space-y-2">
-                  {result.warnings.map((warning) => (
-                    <p key={warning} className="leading-7 text-black/75">
+                  {result.warnings.map((warning, index) => (
+                    <p
+                      key={`${index}-${warning}`}
+                      className="leading-7 text-black/75"
+                    >
                       {warning}
                     </p>
                   ))}

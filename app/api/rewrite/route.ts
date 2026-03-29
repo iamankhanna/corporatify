@@ -65,7 +65,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       ...result,
-      warnings
+      warnings: dedupeWarnings(warnings)
     });
   } catch (error) {
     if (error instanceof InvalidJsonError) {
@@ -97,3 +97,7 @@ async function parseJsonBody(request: Request) {
 }
 
 class InvalidJsonError extends Error {}
+
+function dedupeWarnings(warnings: string[]) {
+  return Array.from(new Set(warnings));
+}

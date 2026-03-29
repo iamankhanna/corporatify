@@ -187,7 +187,9 @@ export function RewriteWorkspace() {
             <p className="text-sm text-black/60">
               {result?.mode === "openai"
                 ? "This response came from the live OpenAI path."
-                : "Mock mode is active until OPENAI_API_KEY is configured in .env.local."}
+                : result?.mode === "huggingface"
+                  ? "This response came from the live Hugging Face path."
+                  : "Mock mode is active until a live provider key is configured in .env.local."}
             </p>
           </div>
         </form>

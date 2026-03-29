@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function HeroPanel() {
   return (
-    <section className="grid gap-10 rounded-[2.5rem] border border-black/10 bg-white/70 p-8 shadow-card backdrop-blur lg:grid-cols-[1.2fr_0.8fr] lg:p-12">
+    <section className="animate-float-in grid gap-10 rounded-[2.5rem] border border-slate-200 bg-white/90 p-8 shadow-card backdrop-blur lg:grid-cols-[1.2fr_0.8fr] lg:p-12">
       <div>
         <p className="text-xs uppercase tracking-[0.35em] text-accent">
           Professional communication, reimagined
@@ -33,7 +33,7 @@ export function HeroPanel() {
         </div>
       </div>
 
-      <div className="rounded-[2rem] border border-black/10 bg-[#f2e4d5] p-6">
+      <div className="animate-pulse-soft rounded-[2rem] border border-slate-200 bg-slate-100 p-6">
         <div className="rounded-[1.5rem] bg-white p-5 shadow-card">
           <p className="text-xs uppercase tracking-[0.3em] text-black/45">
             Raw thought
@@ -46,13 +46,13 @@ export function HeroPanel() {
         </div>
 
         <div className="my-4 flex items-center justify-center">
-          <div className="rounded-full bg-[#16302b] px-4 py-2 text-xs uppercase tracking-[0.35em] text-white">
+          <div className="rounded-full bg-slate-700 px-4 py-2 text-xs uppercase tracking-[0.35em] text-white">
             Refined
           </div>
         </div>
 
-        <div className="rounded-[1.5rem] bg-[#16302b] p-5 text-white shadow-card">
-          <p className="text-xs uppercase tracking-[0.3em] text-clay">
+        <div className="rounded-[1.5rem] bg-slate-800 p-5 text-white shadow-card">
+          <p className="text-xs uppercase tracking-[0.3em] text-slate-300">
             Professional version
           </p>
           <p className="mt-3 text-base leading-7 text-white/80">

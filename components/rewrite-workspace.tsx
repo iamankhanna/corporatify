@@ -94,7 +94,7 @@ export function RewriteWorkspace() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-      <section className="rounded-[2rem] border border-black/10 bg-white/80 p-8 shadow-card backdrop-blur">
+      <section className="animate-float-in rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-card backdrop-blur">
         <div className="flex items-start justify-between gap-6">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-moss">
@@ -195,8 +195,8 @@ export function RewriteWorkspace() {
         </form>
       </section>
 
-      <section className="rounded-[2rem] border border-black/10 bg-[#16302b] p-8 text-white shadow-card">
-        <p className="text-xs uppercase tracking-[0.3em] text-clay">
+      <section className="animate-slide-up rounded-[2rem] border border-slate-200 bg-slate-900 p-8 text-white shadow-card">
+        <p className="text-xs uppercase tracking-[0.3em] text-slate-300">
           Output
         </p>
         <h2 className="mt-3 text-3xl">Professional rewrite panel</h2>
@@ -210,7 +210,7 @@ export function RewriteWorkspace() {
         {result ? (
           <div className="mt-6 space-y-4">
             {result.warnings.length ? (
-              <div className="rounded-[1.5rem] border border-[#f4e2cc]/25 bg-[#f4e2cc] p-5 text-sm text-black">
+              <div className="rounded-[1.5rem] border border-slate-300/60 bg-slate-100 p-5 text-sm text-slate-900">
                 <p className="text-xs uppercase tracking-[0.3em] text-black/55">
                   Notes
                 </p>
@@ -267,8 +267,8 @@ export function RewriteWorkspace() {
               }
               copied={copiedKey === "changes"}
             />
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
-              <p className="text-xs uppercase tracking-[0.3em] text-clay">
+            <div className="rounded-[1.5rem] border border-white/15 bg-white/5 p-5">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-300">
                 Intent summary
               </p>
               <p className="mt-3 text-sm leading-7 text-white/75">
@@ -320,8 +320,8 @@ function ModeBadge({
     <div
       className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.25em] ${
         isLive
-          ? "bg-moss text-white"
-          : "border border-black/10 bg-[#f4e2cc] text-black/75"
+          ? "bg-accent text-white"
+          : "border border-black/10 bg-cloud text-black/75"
       }`}
     >
       {mode === "openai"
@@ -378,14 +378,14 @@ function OutputCard({
     <div
       className={`rounded-[1.5rem] border p-5 ${
         emphasize
-          ? "border-clay/20 bg-[#f4e2cc] text-black"
+          ? "border-slate-300/70 bg-slate-100 text-black"
           : "border-white/10 bg-white/5"
       }`}
     >
       <div className="flex items-center justify-between gap-4">
         <p
           className={`text-xs uppercase tracking-[0.3em] ${
-            emphasize ? "text-black/50" : "text-clay"
+            emphasize ? "text-black/50" : "text-slate-300"
           }`}
         >
           {label}

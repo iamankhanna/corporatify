@@ -1,6 +1,6 @@
 export function ExampleTransform() {
   return (
-    <div className="rounded-[2rem] border border-black/10 bg-[#fbf6ef] p-8 shadow-card">
+    <div className="animate-slide-up rounded-[2rem] border border-slate-200 bg-white p-8 shadow-card">
       <p className="text-xs uppercase tracking-[0.3em] text-moss">
         Before and after
       </p>
@@ -9,7 +9,7 @@ export function ExampleTransform() {
       </h2>
 
       <div className="mt-8 grid gap-4">
-        <div className="rounded-[1.5rem] border border-[#d9c5a2] bg-[#fff7ea] p-5">
+        <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
           <p className="text-xs uppercase tracking-[0.3em] text-black/45">
             What they typed
           </p>
@@ -18,8 +18,8 @@ export function ExampleTransform() {
             seems to know what they are doing.
           </p>
         </div>
-        <div className="rounded-[1.5rem] border border-[#20423b]/10 bg-[#20423b] p-5 text-white">
-          <p className="text-xs uppercase tracking-[0.3em] text-clay">
+        <div className="rounded-[1.5rem] border border-slate-700/20 bg-slate-800 p-5 text-white">
+          <p className="text-xs uppercase tracking-[0.3em] text-slate-300">
             What they can send
           </p>
           <p className="mt-3 text-sm leading-7 text-white/75">

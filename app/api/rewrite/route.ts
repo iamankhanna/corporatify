@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { buildMockRewrite } from "@/lib/ai/mock-rewrite";
 import { moderateText } from "@/lib/ai/moderation";
 import { rewriteRequestSchema } from "@/lib/validation/rewrite";
 import { rewriteMessage } from "@/lib/ai/rewrite";
@@ -20,6 +21,16 @@ export async function POST(request: Request) {
 
     const moderation = await moderateText(parsed.data.rawText);
 
+    if (moderation.blocking) {
+      return NextResponse.json(
+        buildFallbackResponse(
+          parsed.data,
+          moderation.warning ??
+            "Moderation is unavailable right now, so a live rewrite could not be returned."
+        )
+      );
+    }
+
     if (moderation.flagged) {
       return NextResponse.json(
         {
@@ -32,7 +43,51 @@ export async function POST(request: Request) {
     }
 
     const result = await rewriteMessage(parsed.data);
-    return NextResponse.json(result);
+    const warnings = [...result.warnings];
+
+    if (moderation.warning) {
+      warnings.unshift(moderation.warning);
+    }
+
+    const outputModeration = await moderateText(
+      [
+        result.subjectLine,
+        result.polishedMessage,
+        result.variants.softer,
+        result.variants.firmer,
+        result.variants.concise
+      ].join("\n\n")
+    );
+
+    if (outputModeration.blocking) {
+      return NextResponse.json(
+        buildFallbackResponse(
+          parsed.data,
+          outputModeration.warning ??
+            "Moderation is unavailable right now, so a live rewrite could not be returned."
+        )
+      );
+    }
+
+    if (outputModeration.flagged) {
+      return NextResponse.json(
+        {
+          error:
+            "Unable to return a safe professional rewrite right now. Please revise the message and try again.",
+          reasons: outputModeration.reasons
+        },
+        { status: 502 }
+      );
+    }
+
+    if (outputModeration.warning) {
+      warnings.unshift(outputModeration.warning);
+    }
+
+    return NextResponse.json({
+      ...result,
+      warnings: dedupeWarnings(warnings)
+    });
   } catch (error) {
     if (error instanceof InvalidJsonError) {
       return NextResponse.json(
@@ -63,3 +118,19 @@ async function parseJsonBody(request: Request) {
 }
 
 class InvalidJsonError extends Error {}
+
+function dedupeWarnings(warnings: string[]) {
+  return Array.from(new Set(warnings));
+}
+
+function buildFallbackResponse(
+  input: typeof rewriteRequestSchema._type,
+  warning: string
+) {
+  const response = buildMockRewrite(input);
+
+  return {
+    ...response,
+    warnings: dedupeWarnings([warning, ...response.warnings])
+  };
+}

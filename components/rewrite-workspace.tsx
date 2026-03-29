@@ -17,61 +17,65 @@ export function RewriteWorkspace() {
   const [result, setResult] = useState<RewriteResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPending, startTransition] = useTransition();
   const latestRequestId = useRef(0);
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     const requestId = latestRequestId.current + 1;
     latestRequestId.current = requestId;
+    setIsSubmitting(true);
 
-    startTransition(async () => {
-      try {
-        const response = await fetch("/api/rewrite", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            rawText,
-            audience,
-            tone,
-            goal,
-            length,
-            targetLanguage
-          })
-        });
+    try {
+      const response = await fetch("/api/rewrite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          rawText,
+          audience,
+          tone,
+          goal,
+          length,
+          targetLanguage
+        })
+      });
 
-        const data = (await response.json()) as RewriteResponse & {
-          error?: string;
-        };
+      const data = (await response.json()) as RewriteResponse & {
+        error?: string;
+      };
 
-        if (!response.ok) {
-          throw new Error(data.error ?? "Rewrite failed");
-        }
-
-        if (latestRequestId.current !== requestId) {
-          return;
-        }
-
-        startTransition(() => {
-          setResult(data);
-        });
-      } catch (submitError) {
-        if (latestRequestId.current !== requestId) {
-          return;
-        }
-
-        const message =
-          submitError instanceof Error
-            ? submitError.message
-            : "Something went wrong";
-        startTransition(() => {
-          setError(message);
-        });
+      if (!response.ok) {
+        throw new Error(data.error ?? "Rewrite failed");
       }
-    });
+
+      if (latestRequestId.current !== requestId) {
+        return;
+      }
+
+      startTransition(() => {
+        setResult(data);
+      });
+    } catch (submitError) {
+      if (latestRequestId.current !== requestId) {
+        return;
+      }
+
+      const message =
+        submitError instanceof Error
+          ? submitError.message
+          : "Something went wrong";
+      startTransition(() => {
+        setError(message);
+      });
+    } finally {
+      if (latestRequestId.current === requestId) {
+        setIsSubmitting(false);
+      }
+    }
   };
 
   const copyValue = async (key: string, value: string) => {
@@ -175,10 +179,10 @@ export function RewriteWorkspace() {
           <div className="flex flex-wrap items-center gap-4">
             <button
               type="submit"
-              disabled={isPending}
+              disabled={isSubmitting || isPending}
               className="rounded-full bg-ink px-6 py-3 text-sm text-white transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isPending ? "Refining..." : "Polish this message"}
+              {isSubmitting || isPending ? "Refining..." : "Polish this message"}
             </button>
             <p className="text-sm text-black/60">
               {result?.mode === "openai"

@@ -56,7 +56,7 @@ export default function HomePage() {
 
         <section
           id="blueprint"
-          className="rounded-[2rem] border border-black/10 bg-[#16302b] px-8 py-10 text-white shadow-card"
+          className="animate-slide-up rounded-[2rem] border border-slate-200 bg-white/90 px-8 py-10 text-slate-900 shadow-card backdrop-blur"
         >
           <SectionHeading
             eyebrow="Preset lanes"
@@ -69,13 +69,13 @@ export default function HomePage() {
             {presets.map((preset) => (
               <div
                 key={preset.title}
-                className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5"
+                className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5"
               >
-                <p className="text-xs uppercase tracking-[0.3em] text-clay">
+                <p className="text-xs uppercase tracking-[0.3em] text-moss">
                   {preset.audience}
                 </p>
                 <h3 className="mt-3 text-xl">{preset.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-white/70">
+                <p className="mt-2 text-sm leading-6 text-slate-600">
                   {preset.description}
                 </p>
               </div>

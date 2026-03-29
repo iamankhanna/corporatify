@@ -1,0 +1,13 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: fdir@6.5.0
+npm warn Found: peerOptional picomatch@"^3 || ^4" from the root project
+npm warn
+npm warn Could not resolve dependency:
+npm warn peerOptional picomatch@"^3 || ^4" from the root project
+npm error code E403
+npm error 403 403 Forbidden - GET https://registry.npmjs.org/picomatch
+npm error 403 In most cases, you or one of your dependencies are requesting
+npm error 403 a package version that is forbidden by your security policy, or
+npm error 403 on a server you do not have access to.
+npm error A complete log of this run can be found in: /root/.npm/_logs/2026-03-29T14_21_25_100Z-debug-0.log

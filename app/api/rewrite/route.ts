@@ -32,7 +32,41 @@ export async function POST(request: Request) {
     }
 
     const result = await rewriteMessage(parsed.data);
-    return NextResponse.json(result);
+    const warnings = [...result.warnings];
+
+    if (moderation.warning) {
+      warnings.unshift(moderation.warning);
+    }
+
+    const outputModeration = await moderateText(
+      [
+        result.subjectLine,
+        result.polishedMessage,
+        result.variants.softer,
+        result.variants.firmer,
+        result.variants.concise
+      ].join("\n\n")
+    );
+
+    if (outputModeration.flagged) {
+      return NextResponse.json(
+        {
+          error:
+            "Unable to return a safe professional rewrite right now. Please revise the message and try again.",
+          reasons: outputModeration.reasons
+        },
+        { status: 502 }
+      );
+    }
+
+    if (outputModeration.warning) {
+      warnings.unshift(outputModeration.warning);
+    }
+
+    return NextResponse.json({
+      ...result,
+      warnings
+    });
   } catch (error) {
     if (error instanceof InvalidJsonError) {
       return NextResponse.json(

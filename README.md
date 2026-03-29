@@ -29,7 +29,7 @@ Corpartify helps people turn emotional, blunt, or messy text into polished profe
 
 1. Install dependencies with `npm install`
 2. Copy `.env.example` to `.env.local`
-3. Set `OPENAI_API_KEY` in `.env.local` if you want live AI rewrites
+3. Set `OPENAI_API_KEY` or `HUGGINGFACE_API_KEY` in `.env.local` if you want live AI rewrites
 3. Start the dev server with `npm run dev`
 
-If `OPENAI_API_KEY` is not set, the rewrite endpoint falls back to a local mock response so the UI can still be explored.
+If no live provider key is set, the rewrite endpoint falls back to a local mock response so the UI can still be explored.

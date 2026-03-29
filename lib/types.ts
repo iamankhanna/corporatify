@@ -1,5 +1,5 @@
 export type RewriteResponse = {
-  mode: "mock" | "openai";
+  mode: "mock" | "openai" | "huggingface";
   detectedLanguage: string;
   intentSummary: string;
   subjectLine: string;

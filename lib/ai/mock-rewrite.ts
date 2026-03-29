@@ -21,7 +21,9 @@ export function buildMockRewrite(input: RewriteRequest): RewriteResponse {
       "Preserved the underlying concern and request",
       "Improved structure for professional readability"
     ],
-    warnings: []
+    warnings: [
+      "Mock mode is active, so this output is a local placeholder rather than a live AI rewrite."
+    ]
   };
 }
 

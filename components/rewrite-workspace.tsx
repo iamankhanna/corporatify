@@ -207,6 +207,20 @@ export function RewriteWorkspace() {
 
         {result ? (
           <div className="mt-6 space-y-4">
+            {result.warnings.length ? (
+              <div className="rounded-[1.5rem] border border-[#f4e2cc]/25 bg-[#f4e2cc] p-5 text-sm text-black">
+                <p className="text-xs uppercase tracking-[0.3em] text-black/55">
+                  Notes
+                </p>
+                <div className="mt-3 space-y-2">
+                  {result.warnings.map((warning) => (
+                    <p key={warning} className="leading-7 text-black/75">
+                      {warning}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <OutputCard
               label="Subject line"
               value={result.subjectLine}
@@ -262,7 +276,9 @@ export function RewriteWorkspace() {
                 Source:{" "}
                 {result.mode === "openai"
                   ? "OpenAI live response"
-                  : "Local mock response"}
+                  : result.mode === "huggingface"
+                    ? "Hugging Face live response"
+                    : "Local mock response"}
               </p>
             </div>
           </div>
@@ -288,8 +304,12 @@ export function RewriteWorkspace() {
   );
 }
 
-function ModeBadge({ mode }: { mode: "mock" | "openai" }) {
-  const isLive = mode === "openai";
+function ModeBadge({
+  mode
+}: {
+  mode: "mock" | "openai" | "huggingface";
+}) {
+  const isLive = mode !== "mock";
 
   return (
     <div
@@ -299,7 +319,11 @@ function ModeBadge({ mode }: { mode: "mock" | "openai" }) {
           : "border border-black/10 bg-[#f4e2cc] text-black/75"
       }`}
     >
-      {isLive ? "Live OpenAI" : "Mock Mode"}
+      {mode === "openai"
+        ? "Live OpenAI"
+        : mode === "huggingface"
+          ? "Live HF"
+          : "Mock Mode"}
     </div>
   );
 }

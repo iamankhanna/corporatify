@@ -5,6 +5,7 @@ export type ModerationResult = {
   reasons: string[];
   degraded: boolean;
   warning?: string;
+  blocking: boolean;
 };
 
 const client = process.env.OPENAI_API_KEY
@@ -17,8 +18,9 @@ export async function moderateText(text: string): Promise<ModerationResult> {
       flagged: false,
       reasons: [],
       degraded: true,
+      blocking: true,
       warning:
-        "Moderation is running in fallback mode because OpenAI moderation is not configured."
+        "Moderation is unavailable because OpenAI moderation is not configured."
     };
   }
 
@@ -34,22 +36,25 @@ export async function moderateText(text: string): Promise<ModerationResult> {
       return {
         flagged: false,
         reasons: [],
-        degraded: false
+        degraded: false,
+        blocking: false
       };
     }
 
     return {
       flagged: result.flagged,
       reasons: extractFlaggedCategories(result.categories),
-      degraded: false
+      degraded: false,
+      blocking: false
     };
   } catch (error) {
-    console.error("Moderation failed, allowing request to continue", error);
+    console.error("Moderation failed", error);
 
     return {
       flagged: false,
       reasons: [],
       degraded: true,
+      blocking: true,
       warning: buildModerationWarning(error)
     };
   }
@@ -70,8 +75,8 @@ function buildModerationWarning(error: unknown) {
     "status" in error &&
     error.status === 429
   ) {
-    return "OpenAI moderation is temporarily rate-limited, so the rewrite was returned without moderation confirmation.";
+    return "OpenAI moderation is temporarily rate-limited, so live rewrites are blocked until moderation is available again.";
   }
 
-  return "OpenAI moderation is temporarily unavailable, so the rewrite was returned without moderation confirmation.";
+  return "OpenAI moderation is temporarily unavailable, so live rewrites are blocked until moderation is available again.";
 }

@@ -20,6 +20,17 @@ export async function POST(request: Request) {
 
     const moderation = await moderateText(parsed.data.rawText);
 
+    if (moderation.blocking) {
+      return NextResponse.json(
+        {
+          error:
+            moderation.warning ??
+            "Moderation is unavailable right now, so live rewrites are temporarily disabled."
+        },
+        { status: 503 }
+      );
+    }
+
     if (moderation.flagged) {
       return NextResponse.json(
         {
@@ -47,6 +58,17 @@ export async function POST(request: Request) {
         result.variants.concise
       ].join("\n\n")
     );
+
+    if (outputModeration.blocking) {
+      return NextResponse.json(
+        {
+          error:
+            outputModeration.warning ??
+            "Moderation is unavailable right now, so live rewrites are temporarily disabled."
+        },
+        { status: 503 }
+      );
+    }
 
     if (outputModeration.flagged) {
       return NextResponse.json(

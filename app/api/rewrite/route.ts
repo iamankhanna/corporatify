@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { buildMockRewrite } from "@/lib/ai/mock-rewrite";
 import { moderateText } from "@/lib/ai/moderation";
 import { rewriteRequestSchema } from "@/lib/validation/rewrite";
 import { rewriteMessage } from "@/lib/ai/rewrite";
@@ -22,12 +23,11 @@ export async function POST(request: Request) {
 
     if (moderation.blocking) {
       return NextResponse.json(
-        {
-          error:
-            moderation.warning ??
-            "Moderation is unavailable right now, so live rewrites are temporarily disabled."
-        },
-        { status: 503 }
+        buildFallbackResponse(
+          parsed.data,
+          moderation.warning ??
+            "Moderation is unavailable right now, so a live rewrite could not be returned."
+        )
       );
     }
 
@@ -61,12 +61,11 @@ export async function POST(request: Request) {
 
     if (outputModeration.blocking) {
       return NextResponse.json(
-        {
-          error:
-            outputModeration.warning ??
-            "Moderation is unavailable right now, so live rewrites are temporarily disabled."
-        },
-        { status: 503 }
+        buildFallbackResponse(
+          parsed.data,
+          outputModeration.warning ??
+            "Moderation is unavailable right now, so a live rewrite could not be returned."
+        )
       );
     }
 
@@ -122,4 +121,16 @@ class InvalidJsonError extends Error {}
 
 function dedupeWarnings(warnings: string[]) {
   return Array.from(new Set(warnings));
+}
+
+function buildFallbackResponse(
+  input: typeof rewriteRequestSchema._type,
+  warning: string
+) {
+  const response = buildMockRewrite(input);
+
+  return {
+    ...response,
+    warnings: dedupeWarnings([warning, ...response.warnings])
+  };
 }

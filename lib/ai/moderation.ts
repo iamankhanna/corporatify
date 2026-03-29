@@ -18,9 +18,9 @@ export async function moderateText(text: string): Promise<ModerationResult> {
       flagged: false,
       reasons: [],
       degraded: true,
-      blocking: true,
+      blocking: false,
       warning:
-        "Moderation is unavailable because OpenAI moderation is not configured."
+        "Moderation is running in fallback mode because OpenAI moderation is not configured."
     };
   }
 
